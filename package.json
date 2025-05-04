@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "Type-safe routing utilities for Next.js projects with minimal configuration",
   "author": {
-    "name": "Ishan "
+    "name": "Ishan (D3OXY)<hello@deoxy.dev>"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
