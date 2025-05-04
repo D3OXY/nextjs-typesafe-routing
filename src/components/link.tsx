@@ -5,15 +5,18 @@ import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import { 
   RouteDefinition, 
   NavigationOptions, 
-  AllRoutePaths, 
-  ParamsForPath,
-  HasParams,
   DynamicRoutePattern
 } from '@/core/types';
-import { generateUrl } from '@/core/route-builder';
+import { 
+  generateUrl,
+  getRouteByPath,
+  hasParams,
+  validateParams,
+  validateQuery
+} from '@/core/registry';
 
 /**
- * Link props for string routes
+ * Link props for string routes with built-in auto-completion
  */
 export type StringRouteProps<Path extends string> = Omit<NextLinkProps, 'href'> & 
   { href: Path } & 
@@ -51,7 +54,34 @@ export function Link<T extends RouteDefinition | string>(
   let url: string;
   
   if (typeof href === 'string') {
-    // String path case
+    // Look up the route in registry first
+    const registeredRoute = getRouteByPath(href);
+    
+    if (registeredRoute) {
+      // If this is a registered route, perform validation
+      if (registeredRoute.params && params) {
+        try {
+          validateParams(registeredRoute, params);
+        } catch (error) {
+          console.error(`Invalid params for route ${href}:`, error);
+        }
+      } else if (hasParams(href) && !params) {
+        console.warn(`Route ${href} has parameters but none were provided.`);
+      }
+      
+      if (registeredRoute.query && query) {
+        try {
+          validateQuery(registeredRoute, query);
+        } catch (error) {
+          console.error(`Invalid query for route ${href}:`, error);
+        }
+      }
+    } else if (hasParams(href) && !params) {
+      // Even for unregistered routes, warn about missing params
+      console.warn(`Route ${href} has parameters but none were provided.`);
+    }
+    
+    // Generate URL
     if (params) {
       url = Object.entries(params).reduce(
         (path, [key, value]) => path.replace(`:${key}`, String(value)),
@@ -65,7 +95,9 @@ export function Link<T extends RouteDefinition | string>(
     if (query) {
       const searchParams = new URLSearchParams();
       Object.entries(query).forEach(([key, value]) => {
-        searchParams.append(key, String(value));
+        if (value !== undefined) {
+          searchParams.append(key, String(value));
+        }
       });
       const queryString = searchParams.toString();
       if (queryString) {
@@ -73,7 +105,7 @@ export function Link<T extends RouteDefinition | string>(
       }
     }
   } else {
-    // RouteDefinition case
+    // RouteDefinition case - use registry's generateUrl
     url = generateUrl(href, { params, query });
   }
   

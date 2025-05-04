@@ -1,8 +1,13 @@
 "use client";
 
 import { useRouter as useNextRouter } from 'next/navigation';
-import { RouteDefinition, TypedRouter, NavigationOptions } from '@/core/types';
-import { generateUrl } from '@/core/route-builder';
+import { 
+  RouteDefinition, 
+  TypedRouter, 
+  NavigationOptions, 
+  StringRouteOptions 
+} from '@/core/types';
+import { generateUrl } from '@/core/registry';
 
 /**
  * Custom router hook with type-safe methods
@@ -15,8 +20,8 @@ export function useRouter(): TypedRouter {
      * Navigate to a new route with type safety
      */
     push<R extends RouteDefinition>(
-      route: R,
-      options?: NavigationOptions<R>
+      route: R | string,
+      options?: R extends RouteDefinition ? NavigationOptions<R> : StringRouteOptions
     ): Promise<boolean> {
       const url = generateUrl(route, options as any);
       nextRouter.push(url);
@@ -27,8 +32,8 @@ export function useRouter(): TypedRouter {
      * Replace current route with a new one
      */
     replace<R extends RouteDefinition>(
-      route: R,
-      options?: NavigationOptions<R>
+      route: R | string,
+      options?: R extends RouteDefinition ? NavigationOptions<R> : StringRouteOptions
     ): Promise<boolean> {
       const url = generateUrl(route, options as any);
       nextRouter.replace(url);
@@ -60,8 +65,8 @@ export function useRouter(): TypedRouter {
      * Prefetch a route for faster navigation
      */
     prefetch<R extends RouteDefinition>(
-      route: R,
-      options?: NavigationOptions<R>
+      route: R | string,
+      options?: R extends RouteDefinition ? NavigationOptions<R> : StringRouteOptions
     ): Promise<void> {
       const url = generateUrl(route, options as any);
       nextRouter.prefetch(url);

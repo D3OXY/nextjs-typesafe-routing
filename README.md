@@ -26,10 +26,10 @@ pnpm add nextjs-typesafe-routing zod
 
 ```typescript
 // src/app/routes.ts
-import { defineRoute } from 'nextjs-typesafe-routing';
+import { defineRoute, createRouteRegistry } from 'nextjs-typesafe-routing';
 import { z } from 'zod';
 
-export const routes = {
+export const routes = createRouteRegistry({
   home: defineRoute('/'),
   about: defineRoute('/about'),
   user: defineRoute('/user/:id', {
@@ -45,14 +45,10 @@ export const routes = {
       page: z.coerce.number().optional()
     })
   })
-};
+});
 
-// Add route type augmentation to enable autocomplete for string literals
-declare module 'nextjs-typesafe-routing' {
-  interface NextjsTypesafeRouting {
-    routes: typeof routes;
-  }
-}
+// Type augmentation is automatically handled by createRouteRegistry
+// No need for manual declaration!
 ```
 
 ### 2. Set Up the Provider
@@ -154,10 +150,10 @@ import { Link } from 'nextjs-typesafe-routing/link';
 import { useRouter, usePathname, redirect } from 'nextjs-typesafe-routing/navigation';
 
 // Core utilities and types
-import { defineRoute, RouteProvider } from 'nextjs-typesafe-routing/core';
+import { defineRoute, RouteProvider, createRouteRegistry } from 'nextjs-typesafe-routing/core';
 
 // Or import everything from the main entry point
-import { Link, useRouter, defineRoute } from 'nextjs-typesafe-routing';
+import { Link, useRouter, defineRoute, createRouteRegistry } from 'nextjs-typesafe-routing';
 ```
 
 ## API Reference
@@ -173,6 +169,21 @@ const userRoute = defineRoute('/user/:id', {
   }),
   query: z.object({
     tab: z.enum(['profile', 'settings']).optional()
+  })
+});
+```
+
+### `createRouteRegistry`
+
+Registers routes and provides proper typing.
+
+```typescript
+const routes = createRouteRegistry({
+  home: defineRoute('/'),
+  user: defineRoute('/user/:id', {
+    params: z.object({
+      id: z.string()
+    })
   })
 });
 ```
@@ -240,6 +251,10 @@ redirect(routes.home);
 
 // With params
 redirect(routes.user, { params: { id: '123' } });
+
+// Using string literals also works
+redirect('/about');
+redirect('/user/:id', { params: { id: '123' } });
 ```
 
 ## License

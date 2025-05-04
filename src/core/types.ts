@@ -51,6 +51,14 @@ export type NavigationOptions<
     (Q extends never ? {} : { query?: Q });
 
 /**
+ * Type for string route navigation
+ */
+export type StringRouteOptions = {
+  params?: Record<string, string | number | boolean>;
+  query?: Record<string, string | number | boolean | undefined>;
+};
+
+/**
  * Helper to get all route paths from the registry
  */
 export type AllRoutePaths = RoutesRegistry extends { routes: infer R }
@@ -86,23 +94,12 @@ export type HasParams<Path extends string> = Path extends DynamicRoutePattern ? 
  * Type for the enhanced Next.js router with type-safe methods
  */
 export interface TypedRouter {
-  push<R extends RouteDefinition>(
-    route: R,
-    options?: NavigationOptions<R>
-  ): Promise<boolean>;
-  
-  replace<R extends RouteDefinition>(
-    route: R,
-    options?: NavigationOptions<R>
-  ): Promise<boolean>;
-  
+  push(route: RouteDefinition | string, options?: any): Promise<boolean>;
+  replace(route: RouteDefinition | string, options?: any): Promise<boolean>;
   back(): void;
   forward(): void;
   refresh(): void;
-  prefetch<R extends RouteDefinition>(
-    route: R,
-    options?: NavigationOptions<R>
-  ): Promise<void>;
+  prefetch(route: RouteDefinition | string, options?: any): Promise<void>;
 }
 
 /**

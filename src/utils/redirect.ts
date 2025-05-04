@@ -1,6 +1,6 @@
 import { redirect as nextRedirect } from 'next/navigation';
-import { RouteDefinition, NavigationOptions } from '@/core/types';
-import { generateUrl } from '@/core/route-builder';
+import { RouteDefinition, NavigationOptions, StringRouteOptions } from '@/core/types';
+import { generateUrl } from '@/core/registry';
 
 /**
  * Type-safe redirect function
@@ -10,8 +10,8 @@ import { generateUrl } from '@/core/route-builder';
  * @param options - Optional params and query parameters
  */
 export function redirect<R extends RouteDefinition>(
-  route: R,
-  options?: NavigationOptions<R>
+  route: R | string,
+  options?: R extends RouteDefinition ? NavigationOptions<R> : StringRouteOptions
 ): never {
   const url = generateUrl(route, options as any);
   return nextRedirect(url);
