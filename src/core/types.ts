@@ -1,12 +1,27 @@
 import { z } from 'zod';
 
 /**
+ * Get user-provided routes from global interface
+ */
+export type UserProvidedRoutes = 
+  NonNullable<NextjsTypesafeRouting['routes']> extends Record<string, RouteDefinition>
+    ? NonNullable<NextjsTypesafeRouting['routes']>
+    : Record<string, RouteDefinition>;
+
+/**
  * Represents a route definition with path, optional params schema, and optional query schema
  */
 export interface RouteDefinition<Path extends string = string, Params = unknown, Query = unknown> {
   path: Path;
   params?: z.ZodType<Params>;
   query?: z.ZodType<Query>;
+}
+
+/**
+ * Type for routes registry - connects to user-provided routes
+ */
+export interface RoutesRegistry {
+  routes: UserProvidedRoutes;
 }
 
 /**
@@ -34,6 +49,38 @@ export type NavigationOptions<
   Q = R['query'] extends z.ZodType<infer T> ? T : never
 > = (P extends never ? {} : { params: P }) & 
     (Q extends never ? {} : { query?: Q });
+
+/**
+ * Helper to get all route paths from the registry
+ */
+export type AllRoutePaths = RoutesRegistry extends { routes: infer R }
+  ? R extends Record<string, RouteDefinition>
+    ? R[keyof R]['path']
+    : never
+  : string;
+
+/**
+ * Helper to get params for a specific path
+ */
+export type ParamsForPath<
+  Path extends string,
+  Registry = RoutesRegistry
+> = Registry extends { routes: infer R }
+  ? R extends Record<string, RouteDefinition>
+    ? {
+        [K in keyof R]: R[K]['path'] extends Path
+          ? R[K]['params'] extends z.ZodType<infer P>
+            ? P
+            : never
+          : never;
+      }[keyof R]
+    : never
+  : never;
+
+/**
+ * Helper to determine if a path has parameters
+ */
+export type HasParams<Path extends string> = Path extends DynamicRoutePattern ? true : false;
 
 /**
  * Type for the enhanced Next.js router with type-safe methods

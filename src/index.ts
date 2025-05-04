@@ -1,22 +1,28 @@
 // Core exports
-export { defineRoute, generateUrl, validateRouteParams, validateRouteQuery } from './core/route-builder';
-export { RouteProvider, useRoutes, useRoute } from './core/route-provider';
-export type { 
-  RouteDefinition,
-  DynamicRoutePattern,
-  ExtractRouteParams,
-  NavigationOptions,
-  TypedRouter,
-  TypedPathname
-} from './core/types';
+export * from './core';
 
 // Component exports
 export { Link } from './components/link';
-export type { LinkProps } from './components/link';
+export type { LinkProps, StringRouteProps, RouteDefProps } from './components/link';
 
 // Hook exports
-export { useRouter } from './hooks/use-router';
-export { usePathname } from './hooks/use-pathname';
+export * from './hooks';
 
 // Utility exports
 export { redirect } from './utils/redirect';
+
+// Create a declaration merging to allow users to augment the RoutesRegistry
+declare global {
+  interface NextjsTypesafeRouting {
+    /**
+     * Routes registry that can be augmented by user
+     * @example
+     * declare module 'nextjs-typesafe-routing' {
+     *   interface NextjsTypesafeRouting {
+     *     routes: typeof MyRoutes
+     *   }
+     * }
+     */
+    routes?: Record<string, unknown>;
+  }
+}

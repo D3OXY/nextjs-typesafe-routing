@@ -1,12 +1,35 @@
 {
   "name": "nextjs-typesafe-routing",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Type-safe routing utilities for Next.js projects with minimal configuration",
   "author": {
     "name": "Ishan (D3OXY)<hello@deoxy.dev>"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./link": {
+      "types": "./dist/components/link.d.ts",
+      "import": "./dist/components/link.js",
+      "require": "./dist/components/link.js"
+    },
+    "./navigation": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.29.2",
     "@types/node": "^22.15.3",

@@ -46,6 +46,13 @@ export const routes = {
     })
   })
 };
+
+// Add route type augmentation to enable autocomplete for string literals
+declare module 'nextjs-typesafe-routing' {
+  interface NextjsTypesafeRouting {
+    routes: typeof routes;
+  }
+}
 ```
 
 ### 2. Set Up the Provider
@@ -74,7 +81,9 @@ export default function RootLayout({ children }) {
 // src/app/components/navigation.tsx
 "use client";
 
-import { Link, useRouter, usePathname } from 'nextjs-typesafe-routing';
+// Subpath imports for better organization
+import { Link } from 'nextjs-typesafe-routing/link';
+import { useRouter, usePathname } from 'nextjs-typesafe-routing/navigation';
 import { routes } from '../routes';
 
 export function Navigation() {
@@ -85,6 +94,7 @@ export function Navigation() {
     <nav>
       <ul>
         <li>
+          {/* Using route objects */}
           <Link 
             href={routes.home}
             className={pathname.equals(routes.home) ? 'active' : ''}
@@ -93,11 +103,30 @@ export function Navigation() {
           </Link>
         </li>
         <li>
+          {/* Using string literals with autocomplete */}
           <Link 
-            href={routes.about}
+            href="/about"
             className={pathname.equals(routes.about) ? 'active' : ''}
           >
             About
+          </Link>
+        </li>
+        <li>
+          {/* Dynamic routes require params */}
+          <Link 
+            href={routes.user}
+            params={{ id: '123' }}
+          >
+            User Profile
+          </Link>
+        </li>
+        <li>
+          {/* String literals for dynamic routes also work */}
+          <Link 
+            href="/user/:id"
+            params={{ id: '456' }}
+          >
+            Another User
           </Link>
         </li>
         <li>
@@ -111,6 +140,24 @@ export function Navigation() {
     </nav>
   );
 }
+```
+
+## Import Paths
+
+For better code organization, you can use subpath imports:
+
+```typescript
+// Link component
+import { Link } from 'nextjs-typesafe-routing/link';
+
+// Navigation hooks (useRouter, usePathname, redirect)
+import { useRouter, usePathname, redirect } from 'nextjs-typesafe-routing/navigation';
+
+// Core utilities and types
+import { defineRoute, RouteProvider } from 'nextjs-typesafe-routing/core';
+
+// Or import everything from the main entry point
+import { Link, useRouter, defineRoute } from 'nextjs-typesafe-routing';
 ```
 
 ## API Reference
