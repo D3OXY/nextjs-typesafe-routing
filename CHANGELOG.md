@@ -1,5 +1,11 @@
 # nextjs-typesafe-routing
 
+## 0.2.1
+
+### Patch Changes
+
+- ab3d053: Fixed type exports to properly expose NextjsTypesafeRouting interface and ensure createRouteRegistry is correctly exported in the package.
+
 ## 0.2.0
 
 ### Minor Changes
