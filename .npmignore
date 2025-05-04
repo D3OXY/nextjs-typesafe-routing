@@ -1,0 +1,18 @@
+# Development
+.vscode/
+.changeset/
+reference/
+test/
+
+# Configuration
+.eslintrc.json
+.gitignore
+.prettierrc
+prettier.config.js
+tsconfig.json
+
+# Documentation
+project-plan.md
+
+# Build
+*.log

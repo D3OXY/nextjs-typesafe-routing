@@ -1,9 +1,14 @@
 {
   "name": "nextjs-typesafe-routing",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "description": "Type-safe routing utilities for Next.js projects with minimal configuration",
+  "author": {
+    "name": "Ishan "
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
+    "@changesets/cli": "^2.29.2",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
@@ -25,12 +30,28 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "lint": "eslint src --ext .ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "npm run build && changeset publish"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/d3oxy/nextjs-typesafe-routing.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "next",
+    "nextjs",
+    "react",
+    "routing",
+    "typescript",
+    "typesafe",
+    "zod"
+  ],
+  "license": "MIT",
   "dependencies": {
     "zod": "^3.24.3"
   }
