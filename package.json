@@ -1,9 +1,13 @@
 {
   "name": "nextjs-typesafe-routing",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "devDependencies": {
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.3",
